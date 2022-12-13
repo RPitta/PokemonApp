@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-//Pokemon p1 = new Pokemon("asd", 1,  "asd",  new String[]{"pogfdg", "fsjlkdj"});
-//        Pokemon p2 = new Pokemon("fsdf", 2,  "fasdfa",  new String[]{"asd", "asdas"});
-
 @Service
 public class PokemonService {
     @Autowired
@@ -114,40 +111,24 @@ public class PokemonService {
         JSONObject pokemon = new JSONObject(response);
         JSONArray allPokemon  = pokemon.getJSONArray("results");
 
-        List<Pokemon> l = new ArrayList<Pokemon>() {
-            {
-                for (int i = 0; i < allPokemon.length(); i++) {
-                    JSONObject obj = allPokemon.getJSONObject(i);
-                    String name  = obj.get("name").toString();
-                    String url = obj.get("url").toString();
 
-                    // Another request to pokeApi must be made to get a pokemon's type and sprite info
-                    String res = getPokemon(url);
-                    String[] types = getPokemonType(res);
-                    String spriteUrl = getPokemonSprite(res);
-                    Pokemon p = new Pokemon(name, i + 1, spriteUrl);
-                    pokemonRepository.save(p);
+        for (int i = 0; i < allPokemon.length(); i++) {
+            JSONObject obj = allPokemon.getJSONObject(i);
+            String name  = obj.get("name").toString();
+            String url = obj.get("url").toString();
 
-                    for (String type : types) {
-                        int typeId = typeRepository.findByName(type);
-                        assignType(i + 1, typeId);
-                    }
-                }
+            // Another request to pokeApi must be made to get a pokemon's type and sprite info
+            String res = getPokemon(url);
+            String[] types = getPokemonType(res);
+            String spriteUrl = getPokemonSprite(res);
+            Pokemon p = new Pokemon(name, i + 1, spriteUrl);
+            pokemonRepository.save(p);
+
+            for (String type : types) {
+                int typeId = typeRepository.findByName(type);
+                assignType(i + 1, typeId);
             }
-        };
-
-//      return l;
-    }
-
-    public static Pokemon parsePokemon(String response) {
-        JSONObject pokemon = new JSONObject(response);
-
-        String name = pokemon.get("name").toString();
-        int id = pokemon.getInt("id");
-        String[] types = getPokemonType(response);
-        String spriteUrl = getPokemonSprite(response);
-
-        return new Pokemon(name, id, spriteUrl);
+        }
     }
 
     public void loadAllPokemon() {
@@ -162,7 +143,4 @@ public class PokemonService {
     public Pokemon getPokemonById(int id) {
         return pokemonRepository.findById(id).get();
     }
-
-
-
 }
