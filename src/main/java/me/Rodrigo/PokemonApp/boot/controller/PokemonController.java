@@ -38,7 +38,5 @@ public class PokemonController {
 
         return (ResponseEntity) ResponseEntity.status(HttpStatus.OK).
             body(pokemonService.getPokemonById(pid));
-
-
     }
 }

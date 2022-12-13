@@ -4,6 +4,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface PokemonRepository extends CrudRepository<Pokemon, Integer>{
+import java.util.List;
 
+public interface PokemonRepository extends CrudRepository<Pokemon, Integer>{
+    @Override
+    List<Pokemon> findAll();
 }

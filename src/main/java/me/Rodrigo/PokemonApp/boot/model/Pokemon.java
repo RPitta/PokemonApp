@@ -32,6 +32,7 @@ public class Pokemon {
     // the map table with
 //    private List<String> types = new ArrayList<>();
 
+    public Pokemon() {}
     public Pokemon(String name, int id, String imgSrc) {
         setId(id);
         setName(name);
@@ -42,12 +43,12 @@ public class Pokemon {
     public int getId() { return id;}
     public String getName() { return name;}
     public String getImgSrc() { return imgSrc;}
-//    public List<String> getTypes() { return types;}
+    public Set<Type> getTypes() { return types;}
 
     public void setId(int newId) { id = newId; }
     public void setName(String name) { this.name = name;}
     public void setImgSrc(String imgSrc) { this.imgSrc = imgSrc;}
-//    public void addType(String type) { this.types.add(type);}
+    public void setTypes(Set<Type> types) { this.types = types;}
 
 //    public void addTypes(String[] newTypes) {
 //       List l = Arrays.asList(types);

@@ -1,6 +1,10 @@
 package me.Rodrigo.PokemonApp.boot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,6 +17,10 @@ public class Type {
 
     @Column
     private String name;
+
+    @JsonIgnore
+    @ManyToMany( mappedBy = "types" )
+    private Set<Pokemon> pokemonSet = new HashSet<>();
 
     public String getName() { return name; }
     public int getId() { return id; }

@@ -8,18 +8,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import me.Rodrigo.PokemonApp.boot.model.Pokemon;
-import me.Rodrigo.PokemonApp.boot.model.PokemonType;
 import me.Rodrigo.PokemonApp.boot.model.Type;
 import org.json.JSONArray;
 import me.Rodrigo.PokemonApp.boot.repository.PokemonRepository;
 import me.Rodrigo.PokemonApp.boot.repository.TypeRepository;
-import me.Rodrigo.PokemonApp.boot.repository.PokemonTypeRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 //Pokemon p1 = new Pokemon("asd", 1,  "asd",  new String[]{"pogfdg", "fsjlkdj"});
 //        Pokemon p2 = new Pokemon("fsdf", 2,  "fasdfa",  new String[]{"asd", "asdas"});
@@ -32,8 +31,16 @@ public class PokemonService {
     @Autowired
     TypeRepository typeRepository;
 
-    @Autowired
-    PokemonTypeRepository pokemonTypeRepository;
+    public Pokemon assignType(int pokemonId, int typeId) {
+        Set<Type> typeSet = null;
+        Pokemon p = pokemonRepository.findById(pokemonId).get();
+        Type t = typeRepository.findById(typeId).get();
+        typeSet = p.getTypes();
+        typeSet.add(t);
+        p.setTypes(typeSet);
+        return pokemonRepository.save(p);
+
+    }
 
     public static String getPokemon(String urlString) {
         BufferedReader reader;
@@ -102,7 +109,7 @@ public class PokemonService {
         return sprites.get("front_default").toString();
     }
 
-    public List<Pokemon> parseAllPokemon(String response) {
+    public void parseAllPokemon(String response) {
         // Parses JSON response of 151 pokemon and maps it to a List<Pokemon>
         JSONObject pokemon = new JSONObject(response);
         JSONArray allPokemon  = pokemon.getJSONArray("results");
@@ -117,28 +124,22 @@ public class PokemonService {
                     // Another request to pokeApi must be made to get a pokemon's type and sprite info
                     String res = getPokemon(url);
                     String[] types = getPokemonType(res);
-
-                    // Here lookup up type in db and save pokemonId and typeId to pokemonType table
-                    for (String type : types) {
-                        System.out.println(type);
-                        int typeId = typeRepository.findByName(type);
-                        pokemonTypeRepository.insertPokemonType(i + 1, typeId);
-                    }
-
-
-
                     String spriteUrl = getPokemonSprite(res);
+                    Pokemon p = new Pokemon(name, i + 1, spriteUrl);
+                    pokemonRepository.save(p);
 
-                    add(new Pokemon(name, i + 1, spriteUrl));
+                    for (String type : types) {
+                        int typeId = typeRepository.findByName(type);
+                        assignType(i + 1, typeId);
+                    }
                 }
             }
         };
 
-      return l;
+//      return l;
     }
 
     public static Pokemon parsePokemon(String response) {
-        // Parses JSON response of 151 pokemon and maps it to a List<Pokemon>
         JSONObject pokemon = new JSONObject(response);
 
         String name = pokemon.get("name").toString();
@@ -151,22 +152,15 @@ public class PokemonService {
 
     public void loadAllPokemon() {
         // Gets all 151 pokemon data and saves it to the database
-        // saveall for pokemonTypesRepository()
         String res = getPokemon("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0");
-        List<Pokemon> pokemon = parseAllPokemon(res);
-//        pokemon.forEach(p -> pokemonRepository.saveA);
-
-//        pokemonRepository.saveAll(pokemon);
+        parseAllPokemon(res);
     }
+
     public List<Pokemon> getAllPokemon() {
-        String res = getPokemon("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0");
-        return parseAllPokemon(res);
+        return pokemonRepository.findAll();
     }
-
     public Pokemon getPokemonById(int id) {
-        String url = String.format("https://pokeapi.co/api/v2/pokemon/%s", id);
-        String res = getPokemon(url);
-        return parsePokemon(res);
+        return pokemonRepository.findById(id).get();
     }
 
 
