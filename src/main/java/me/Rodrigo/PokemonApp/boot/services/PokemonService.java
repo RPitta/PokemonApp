@@ -1,22 +1,23 @@
-package me.Rodrigo.PokemonApp.services;
+package me.Rodrigo.PokemonApp.boot.services;
 
-import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import me.Rodrigo.PokemonApp.Pokemon;
+
+import me.Rodrigo.PokemonApp.boot.model.Pokemon;
+import me.Rodrigo.PokemonApp.boot.model.PokemonType;
+import me.Rodrigo.PokemonApp.boot.model.Type;
 import org.json.JSONArray;
+import me.Rodrigo.PokemonApp.boot.repository.PokemonRepository;
+import me.Rodrigo.PokemonApp.boot.repository.TypeRepository;
+import me.Rodrigo.PokemonApp.boot.repository.PokemonTypeRepository;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,14 @@ import java.util.List;
 
 @Service
 public class PokemonService {
+    @Autowired
+    PokemonRepository pokemonRepository;
+
+    @Autowired
+    TypeRepository typeRepository;
+
+    @Autowired
+    PokemonTypeRepository pokemonTypeRepository;
 
     public static String getPokemon(String urlString) {
         BufferedReader reader;
@@ -93,7 +102,7 @@ public class PokemonService {
         return sprites.get("front_default").toString();
     }
 
-    public static List<Pokemon> parseAllPokemon(String response) {
+    public List<Pokemon> parseAllPokemon(String response) {
         // Parses JSON response of 151 pokemon and maps it to a List<Pokemon>
         JSONObject pokemon = new JSONObject(response);
         JSONArray allPokemon  = pokemon.getJSONArray("results");
@@ -108,9 +117,19 @@ public class PokemonService {
                     // Another request to pokeApi must be made to get a pokemon's type and sprite info
                     String res = getPokemon(url);
                     String[] types = getPokemonType(res);
+
+                    // Here lookup up type in db and save pokemonId and typeId to pokemonType table
+                    for (String type : types) {
+                        System.out.println(type);
+                        int typeId = typeRepository.findByName(type);
+                        pokemonTypeRepository.insertPokemonType(i + 1, typeId);
+                    }
+
+
+
                     String spriteUrl = getPokemonSprite(res);
 
-                    add(new Pokemon(name, i + 1, spriteUrl, types));
+                    add(new Pokemon(name, i + 1, spriteUrl));
                 }
             }
         };
@@ -127,12 +146,17 @@ public class PokemonService {
         String[] types = getPokemonType(response);
         String spriteUrl = getPokemonSprite(response);
 
-        return new Pokemon(name, id, spriteUrl, types);
+        return new Pokemon(name, id, spriteUrl);
     }
 
     public void loadAllPokemon() {
         // Gets all 151 pokemon data and saves it to the database
+        // saveall for pokemonTypesRepository()
+        String res = getPokemon("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0");
+        List<Pokemon> pokemon = parseAllPokemon(res);
+//        pokemon.forEach(p -> pokemonRepository.saveA);
 
+//        pokemonRepository.saveAll(pokemon);
     }
     public List<Pokemon> getAllPokemon() {
         String res = getPokemon("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0");
@@ -144,6 +168,7 @@ public class PokemonService {
         String res = getPokemon(url);
         return parsePokemon(res);
     }
+
 
 
 }

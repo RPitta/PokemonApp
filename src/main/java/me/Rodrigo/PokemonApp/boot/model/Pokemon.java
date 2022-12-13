@@ -1,12 +1,7 @@
-package me.Rodrigo.PokemonApp;
+package me.Rodrigo.PokemonApp.boot.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table
@@ -21,6 +16,13 @@ public class Pokemon {
     @Column
     private String imgSrc;
 
+    @ManyToMany
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "POKEMON_ID"),
+            inverseJoinColumns = @JoinColumn(name = "TYPE_ID")
+    )
+    private Set<Type> types = new HashSet<>();
+
 
     // New class Type with a single name property
     // and addType() that takes in a type and a pokemon id to be used in the map table.
@@ -30,7 +32,7 @@ public class Pokemon {
     // the map table with
 //    private List<String> types = new ArrayList<>();
 
-    public Pokemon(String name, int id, String imgSrc, String[] types) {
+    public Pokemon(String name, int id, String imgSrc) {
         setId(id);
         setName(name);
         setImgSrc(imgSrc);

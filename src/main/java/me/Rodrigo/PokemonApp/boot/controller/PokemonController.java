@@ -1,16 +1,11 @@
-package me.Rodrigo.PokemonApp.controller;
+package me.Rodrigo.PokemonApp.boot.controller;
 
-import me.Rodrigo.PokemonApp.Pokemon;
-import me.Rodrigo.PokemonApp.services.PokemonService;
-import org.apache.coyote.Response;
+import me.Rodrigo.PokemonApp.boot.services.PokemonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @ResponseBody
@@ -19,6 +14,12 @@ public class PokemonController {
     @Autowired
     // Marks this as something that needs dependency injection
     private PokemonService pokemonService;
+
+    @GetMapping("/api/load")
+    public ResponseEntity loadAllPokemon() {
+        pokemonService.loadAllPokemon();
+        return (ResponseEntity) ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 
     @GetMapping("/api/pokemon")
     public ResponseEntity getAllPokemon() {  return (ResponseEntity) ResponseEntity.status(HttpStatus.OK).

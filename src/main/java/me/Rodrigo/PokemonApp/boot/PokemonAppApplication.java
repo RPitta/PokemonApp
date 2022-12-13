@@ -1,4 +1,4 @@
-package me.Rodrigo.PokemonApp;
+package me.Rodrigo.PokemonApp.boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
