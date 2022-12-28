@@ -18,12 +18,27 @@ public class Type {
     @Column
     private String name;
 
+    @Column
+    private String color;
+
     @JsonIgnore
     @ManyToMany( mappedBy = "types" )
     private Set<Pokemon> pokemonSet = new HashSet<>();
 
+    public Type() {};
+
+    public Type(int id, String name, String color) {
+        setId(id);
+        setName(name);
+        setColor(color);
+    }
     public String getName() { return name; }
     public int getId() { return id; }
 
+    public String getColor() { return color; }
+
+    public void setId(int id) { this.id = id; }
     public void setName(String name) { this.name = name; }
+    public void setColor(String color) { this.color = color; }
+
 }
