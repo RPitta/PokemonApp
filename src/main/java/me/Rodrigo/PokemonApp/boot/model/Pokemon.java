@@ -21,7 +21,8 @@ public class Pokemon {
             joinColumns = @JoinColumn(name = "POKEMON_ID"),
             inverseJoinColumns = @JoinColumn(name = "TYPE_ID")
     )
-    private Set<Type> types = new HashSet<>();
+    @OrderBy
+    private Set<Type> types = new LinkedHashSet<>();
 
     public Pokemon() {}
     public Pokemon(String name, int id, String imgSrc) {
