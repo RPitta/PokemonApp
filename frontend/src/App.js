@@ -10,7 +10,6 @@ class App extends Component {
         <Router>
           <Switch>
             <Route path='/' exact={true} component={ShowPokemon}/>
-            <Route path='/pokemon' exact={true} component={ShowPokemon}/>
           </Switch>
         </Router>
     )
