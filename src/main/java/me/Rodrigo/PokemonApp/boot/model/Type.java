@@ -8,17 +8,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name="type")
 public class Type {
 
     @Id
-    @Column
+    @Column(name="id")
     private int id;
 
-    @Column
+    @Column(name="name")
     private String name;
 
-    @Column
+    @Column(name="color")
     private String color;
 
     @JsonIgnore

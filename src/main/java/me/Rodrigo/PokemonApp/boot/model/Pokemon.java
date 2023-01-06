@@ -4,22 +4,23 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table
+@Table(name="pokemon")
 public class Pokemon {
-    @Column
+    @Column(name="name")
     private String name;
 
     @Id
-    @Column
+    @Column(name="id")
     private int id;
 
-    @Column
+    @Column(name="imgsrc")
     private String imgSrc;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            joinColumns = @JoinColumn(name = "POKEMON_ID"),
-            inverseJoinColumns = @JoinColumn(name = "TYPE_ID")
+            name = "pokemon_types",
+            joinColumns = @JoinColumn(name = "pokemon_id"),
+            inverseJoinColumns = @JoinColumn(name = "type_id")
     )
     @OrderBy
     private Set<Type> types = new LinkedHashSet<>();
