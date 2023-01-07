@@ -26,7 +26,6 @@ public class PokemonService {
     @Autowired
     TypeRepository typeRepository;
 
-
     public static List<Type> pokemonTypes;
     static {
         pokemonTypes = new ArrayList<Type>();
