@@ -14,10 +14,11 @@
 FROM openjdk:17-jdk-alpine as build
 WORKDIR /app
 
-# Copy [host local machine] to [working directory inside image
+# Copy [host local machine] to [working directory] inside image
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
+RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline -B
 COPY src src
 
