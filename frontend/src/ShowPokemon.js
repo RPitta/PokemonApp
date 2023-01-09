@@ -19,7 +19,6 @@ class ShowPokemon extends Component {
     render() {
         const { pokemon, filteredPokemon, isLoading } = this.state;
 
-
         if (isLoading) {
             return <p>Loading...</p>;
         }
@@ -46,7 +45,6 @@ class ShowPokemon extends Component {
                     <div class="d-flex justify-content-center mb-4">
                         <div class="w-25 ">
                             <input type="search" id="form1" class="form-control" onChange={handleFilter} />
-                            <label class="form-label" htmlFor="form1">Search</label>
                         </div>
                     </div>
 
