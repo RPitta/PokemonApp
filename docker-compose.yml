@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      DB_URL: jdbc:mysql://mysqldb/pokemon
+      DB_USERNAME: user
+      DB_PASSWORD: pass123
+    depends_on:
+      - mysql_container
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 80:3000
+    depends_on:
+      - backend
+  mysql_container:
+    image: mysql:8.0.31
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: pokemon
+      MYSQL_ROOT_PASSWORD: Rodrigop96!
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass123
+
+volumes:
+  dbdata:
+
+
+#services:
+#
+#  db:
+#    image: "mysql:5.7.32"
+#    container_name: db
+#    restart: always
+#
+#    ports:
+#      - 3307:3306
+#    volumes:
+#      - "./data/mariadb:/var/lib/mysql:rw"
+#    environment:
+#      - DB_URL=jdbc:mysql://localhost:3306/pokemon
+#      - MYSQL_PASSWORD=Rodrigop96!
+#      - MYSQL_ROOT_PASSWORD=Rodrigop96!
+#
+#
+#  pokedex:
+#    build: ./
+#    container_name: pokedex
+#    ports:
+#      - 8080:8080 # Forward the exposed port 8080 on the container to port 8080 on the host machine
+#    environment:
+#      - MYSQL_DATABASE=pokemon
+#      - MYSQL_PASSWORD=Rodrigop96!
+#      - MYSQL_ROOT_PASSWORD=Rodrigop96!
+#    depends_on:
+#      - db
+#
