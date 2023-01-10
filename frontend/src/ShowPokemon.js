@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PokemonCard from './PokemonCard';
-import { Button, ButtonGroup, Container, Table } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Container } from 'reactstrap';
 
 class ShowPokemon extends Component {
 
@@ -13,7 +12,7 @@ class ShowPokemon extends Component {
     componentDidMount() {
         fetch('/pokemon')
             .then(response => response.json())
-            .then(data => this.setState({ pokemon: data , filteredPokemon: data}));
+            .then(data => this.setState({ pokemon: data, filteredPokemon: data }));
     }
 
     render() {
@@ -30,32 +29,30 @@ class ShowPokemon extends Component {
                     .toLocaleLowerCase()
                     .includes(event.target.value.toLocaleLowerCase())
             );
-            this.setState({ filteredPokemon: _filteredPokemon});
+            this.setState({ filteredPokemon: _filteredPokemon });
         }
 
         const pokemonCards = filteredPokemon.map(p => {
-                    return <PokemonCard pmon={p}/>
-                });
+            return <PokemonCard pmon={p} />
+        });
 
-        return(
-            <div class = "py-5  bg-dark" >
+        return (
+            <div class="py-5 bg-dark" >
                 <Container fluid >
-                    <h1 class="pb-3 d-flex justify-content-center text-white mb-5"> Pokedex < /h1>
+                    <h1 class="pb-3 d-flex justify-content-center text-white mb-3"> Pokedex < /h1>
 
-                    <div class="d-flex justify-content-center mb-4">
-                        <div class="w-25 ">
-                            <input type="search" id="form1" class="form-control" onChange={handleFilter} />
+                        <div class="d-flex justify-content-center mb-5">
+                            <input type="search" id="form1" class="form-control w-50 w-md-25 " onChange={handleFilter} />
                         </div>
-                    </div>
 
-                    <div class="container justify-content-center" >
-                        <div class="row gy-5 gx-5" >
-                            {pokemonCards}
+                        <div class="container justify-content-center" >
+                            <div class="row gy-5 gx-5 justify-content-center" >
+                                {pokemonCards}
+                            </div>
                         </div>
-                    </div>
                 </Container>
             </div>
-            );
+        );
     }
 }
 export default ShowPokemon;
